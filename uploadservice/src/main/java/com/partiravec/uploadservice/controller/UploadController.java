@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 
 @RestController
-@CrossOrigin()
 public class UploadController {
     private Environment environment;
 
