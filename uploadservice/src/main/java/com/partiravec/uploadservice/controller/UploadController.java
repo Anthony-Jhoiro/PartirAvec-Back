@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,9 +26,10 @@ public class UploadController {
     }
 
     @PostMapping("/")
-    public String singleFileUpload(@RequestParam("file") MultipartFile file) {
+    public Model singleFileUpload(@RequestParam("file") MultipartFile file, Model model) {
         if (file.isEmpty()) {
-            return "Please select a file to upload";
+            model.addAttribute("error", "Please select a file to upload");
+            return model;
         }
 
         try {
@@ -38,12 +40,14 @@ public class UploadController {
             String image_name = String.valueOf(Calendar.getInstance().getTimeInMillis() + ((int)(Math.random()*1000)));
             Path path = Paths.get(UPLOADED_FLODER + image_name);
             Files.write(path, bytes);
-            return EXPOSED_PATH+image_name;
+            model.addAttribute("image", EXPOSED_PATH+image_name);
+            return model;
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "An error occured";
+        model.addAttribute("error", "An error occured");
+        return model;
     }
 
     @GetMapping(value = "/{url}", produces = MediaType.IMAGE_JPEG_VALUE)
