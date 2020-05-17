@@ -1,10 +1,10 @@
 package com.partiravec.uploadservice.controller;
 
+import com.partiravec.uploadservice.model.ImageResponse;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 public class UploadController {
     private Environment environment;
 
@@ -26,10 +27,11 @@ public class UploadController {
     }
 
     @PostMapping("/")
-    public Model singleFileUpload(@RequestParam("file") MultipartFile file, Model model) {
+    public ImageResponse singleFileUpload(@RequestParam("file") MultipartFile file) {
+        ImageResponse imageResponse = new ImageResponse();
         if (file.isEmpty()) {
-            model.addAttribute("error", "Please select a file to upload");
-            return model;
+            imageResponse.setError("Please select a file to upload");
+            return imageResponse;
         }
 
         try {
@@ -40,14 +42,14 @@ public class UploadController {
             String image_name = String.valueOf(Calendar.getInstance().getTimeInMillis() + ((int)(Math.random()*1000)));
             Path path = Paths.get(UPLOADED_FLODER + image_name);
             Files.write(path, bytes);
-            model.addAttribute("image", EXPOSED_PATH+image_name);
-            return model;
+            imageResponse.setUrl(EXPOSED_PATH+image_name);
+            return imageResponse;
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        model.addAttribute("error", "An error occured");
-        return model;
+        imageResponse.setError("An error occured");
+        return imageResponse;
     }
 
     @GetMapping(value = "/{url}", produces = MediaType.IMAGE_JPEG_VALUE)
