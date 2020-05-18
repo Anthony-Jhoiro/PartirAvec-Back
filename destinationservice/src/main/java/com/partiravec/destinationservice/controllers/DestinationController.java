@@ -43,12 +43,7 @@ public class DestinationController {
         Optional<Destination> optionalDestination = destinationDao.findById(id);
 
 
-        if (optionalDestination.isPresent()) {
-            Destination destination = optionalDestination.get();
-            destination.setCountry(destination.getCountry());
-            return destination;
-        }
-        return null;
+        return optionalDestination.orElse(null);
     }
 
     /**
@@ -77,8 +72,9 @@ public class DestinationController {
      * @param destination destination to create
      */
     @PostMapping("/destination")
-    public void createDestination(@RequestBody Destination destination) {
+    public Destination createDestination(@RequestBody Destination destination) {
         saveDestination(destination);
+        return destination;
     }
 
 
@@ -88,8 +84,9 @@ public class DestinationController {
      * @param destination destination to update
      */
     @PatchMapping("/destination")
-    public void updateDestination(@RequestBody Destination destination) {
+    public Destination updateDestination(@RequestBody Destination destination) {
         saveDestination(destination);
+        return destination;
     }
 
     /**
@@ -97,7 +94,7 @@ public class DestinationController {
      * If the associate country does not exists, it creates it
      * @param destination destination to save
      */
-    public void saveDestination(Destination destination) {
+    public Destination saveDestination(Destination destination) {
         // If the country does not exist, create it
         Optional<Country> optionalCountry = countryDao.findByCode(destination.getCountry().getCode());
         if (optionalCountry.isEmpty()) {
@@ -110,6 +107,7 @@ public class DestinationController {
 
         // Save destination
         destinationDao.save(destination);
+        return destination;
     }
 
 

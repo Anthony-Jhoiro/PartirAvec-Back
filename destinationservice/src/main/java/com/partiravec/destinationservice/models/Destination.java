@@ -15,28 +15,33 @@ public class Destination {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
     private String title;
+    @Lob
     private String text;
     @ElementCollection
     private Collection<String> images;
+    private double lat;
+    private double lng;
     private String location;
-    @ManyToOne
-    private Country country;
-    private int author;
     @CreationTimestamp
     private LocalDateTime createDate;
     @UpdateTimestamp
     private LocalDateTime updateDate;
 
-    public Destination(int id, String title, String text, ArrayList<String> images, String location, Country country, int author, LocalDateTime createDate, LocalDateTime updateDate) {
+    @ManyToOne
+    private Country country;
+
+
+    public Destination(int id, String title, String text, Collection<String> images, double lat, double lng, String location, LocalDateTime createDate, LocalDateTime updateDate, Country country) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.images = images;
+        this.lat = lat;
+        this.lng = lng;
         this.location = location;
-        this.country = country;
-        this.author = author;
         this.createDate = createDate;
         this.updateDate = updateDate;
+        this.country = country;
     }
 
     public Destination() {
@@ -49,12 +54,21 @@ public class Destination {
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", images=" + images +
+                ", lat=" + lat +
+                ", lng=" + lng +
                 ", location='" + location + '\'' +
-                ", country=" + country +
-                ", author=" + author +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
+                ", country=" + country +
                 '}';
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLng() {
+        return lng;
     }
 
     public int getId() {
@@ -79,10 +93,6 @@ public class Destination {
 
     public Country getCountry() {
         return country;
-    }
-
-    public int getAuthor() {
-        return author;
     }
 
     public LocalDateTime getCreateDate() {
@@ -111,9 +121,5 @@ public class Destination {
 
     public void setCountry(Country country) {
         this.country = country;
-    }
-
-    public void setAuthor(int author) {
-        this.author = author;
     }
 }

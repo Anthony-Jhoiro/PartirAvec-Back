@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface DestinationDao extends CrudRepository<Destination, Integer> {
 
-    List<Destination> findByCountryId(int countryId);
+//    List<Destination> findByCountryId(int countryId);
 
     List<Destination> findByCountryCode(String countryCode);
 
