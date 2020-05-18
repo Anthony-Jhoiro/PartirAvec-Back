@@ -5,9 +5,11 @@ import com.partiravec.destinationservice.dao.DestinationDao;
 import com.partiravec.destinationservice.models.Country;
 import com.partiravec.destinationservice.models.Destination;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +46,26 @@ public class DestinationController {
 
 
         return optionalDestination.orElse(null);
+    }
+
+    @GetMapping("/destinations")
+    public Iterable<Destination> getDestinations(
+            @RequestParam(name = "offset", defaultValue = "-1") String s_offset,
+            @RequestParam(name = "limit", defaultValue = "-1") String s_limit) {
+
+        try {
+            int offset = Integer.parseInt(s_offset);
+            int limit = Integer.parseInt(s_limit);
+            if (offset != -1 && limit != -1) {
+                return destinationDao.findAll(PageRequest.of(offset, limit, Sort.by(Sort.Direction.DESC, "updateDate")));
+            }
+        } catch (NumberFormatException ignored) {  }
+
+        return destinationDao.findAll();
+
+
+
+
     }
 
     /**
