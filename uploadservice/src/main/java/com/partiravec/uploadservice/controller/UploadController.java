@@ -17,7 +17,6 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
 public class UploadController {
     private Environment environment;
 
@@ -27,6 +26,7 @@ public class UploadController {
     }
 
     @PostMapping("/")
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:10110"})
     public ImageResponse singleFileUpload(@RequestParam("file") MultipartFile file) {
         ImageResponse imageResponse = new ImageResponse();
         if (file.isEmpty()) {

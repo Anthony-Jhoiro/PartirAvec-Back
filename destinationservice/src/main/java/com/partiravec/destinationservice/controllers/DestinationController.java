@@ -83,7 +83,8 @@ public class DestinationController {
      * @return list of the countries
      */
     @GetMapping("/countries")
-    public List<Country> getCountriesWithDestinations() {
+    public List<Country> getCountriesWithDestinations(@RequestParam("_user") String userName) {
+        System.out.println("userName :" + userName);
         return countryDao.findAllCountriesHavingDestinations();
     }
 
