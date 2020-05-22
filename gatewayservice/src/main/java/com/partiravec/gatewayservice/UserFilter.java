@@ -10,10 +10,7 @@ import org.keycloak.representations.AccessToken;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Add user id to the query params before forwarding the request
@@ -62,7 +59,7 @@ public class UserFilter extends ZuulFilter {
         }
 
         // Add user id to the query parameters
-        finalParameters.put("_user", Arrays.asList(accessToken.getId()));
+        finalParameters.put("_user", Collections.singletonList(accessToken.getId()));
 
         // Assign the new list of query parameters to the current context
         ctx.setRequestQueryParams(finalParameters);
