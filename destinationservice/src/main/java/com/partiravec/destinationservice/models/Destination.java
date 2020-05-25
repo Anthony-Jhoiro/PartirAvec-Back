@@ -1,6 +1,5 @@
 package com.partiravec.destinationservice.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -26,12 +25,14 @@ public class Destination {
     private LocalDateTime createDate;
     @UpdateTimestamp
     private LocalDateTime updateDate;
+    private String author;
+    private int book_id;
 
     @ManyToOne
     private Country country;
 
 
-    public Destination(int id, String title, String text, Collection<String> images, double lat, double lng, String location, LocalDateTime createDate, LocalDateTime updateDate, Country country) {
+    public Destination(int id, String title, String text, Collection<String> images, double lat, double lng, String location, LocalDateTime createDate, LocalDateTime updateDate, String author, int book_id, Country country) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -41,6 +42,8 @@ public class Destination {
         this.location = location;
         this.createDate = createDate;
         this.updateDate = updateDate;
+        this.author = author;
+        this.book_id = book_id;
         this.country = country;
     }
 
@@ -59,8 +62,13 @@ public class Destination {
                 ", location='" + location + '\'' +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
+                ", author='" + author + '\'' +
                 ", country=" + country +
                 '}';
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public double getLat() {
@@ -121,5 +129,17 @@ public class Destination {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public int getBook_id() {
+        return book_id;
+    }
+
+    public void setBook_id(int book_id) {
+        this.book_id = book_id;
     }
 }

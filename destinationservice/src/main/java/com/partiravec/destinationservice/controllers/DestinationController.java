@@ -5,7 +5,6 @@ import com.partiravec.destinationservice.dao.DestinationDao;
 import com.partiravec.destinationservice.models.Country;
 import com.partiravec.destinationservice.models.Destination;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
@@ -18,16 +17,19 @@ public class DestinationController {
 
     private final DestinationDao destinationDao;
     private final CountryDao countryDao;
+    private final BookController bookController;
 
     /**
      * Inject dependences
      * @param destinationDao dao for destinations
      * @param countryDao dao for countries
+     * @param bookController controller for books
      */
     @Autowired
-    public DestinationController(DestinationDao destinationDao, CountryDao countryDao) {
+    public DestinationController(DestinationDao destinationDao, CountryDao countryDao, BookController bookController) {
         this.destinationDao = destinationDao;
         this.countryDao = countryDao;
+        this.bookController = bookController;
     }
 
     @GetMapping("/")
@@ -43,8 +45,6 @@ public class DestinationController {
     @GetMapping("/destination/{id}")
     public Destination getDestinationById(@PathVariable("id") int id) {
         Optional<Destination> optionalDestination = destinationDao.findById(id);
-
-
         return optionalDestination.orElse(null);
     }
 
@@ -64,8 +64,6 @@ public class DestinationController {
         return destinationDao.findAll();
 
 
-
-
     }
 
     /**
@@ -83,8 +81,7 @@ public class DestinationController {
      * @return list of the countries
      */
     @GetMapping("/countries")
-    public List<Country> getCountriesWithDestinations(@RequestParam("_user") String userName) {
-        System.out.println("userName :" + userName);
+    public List<Country> getCountriesWithDestinations() {
         return countryDao.findAllCountriesHavingDestinations();
     }
 
@@ -95,9 +92,18 @@ public class DestinationController {
      * @param destination destination to create
      */
     @PostMapping("/destination")
-    public Destination createDestination(@RequestBody Destination destination) {
-        saveDestination(destination);
-        return destination;
+    public Destination createDestination(@RequestBody Destination destination, @RequestParam("_user") String userName) {
+        // Controle : User can access the book
+        if(bookController.userHasAccessToBook(userName, destination.getBook_id())) {
+            // Set the author with current user
+            destination.setAuthor(userName);
+
+            // Save destination + country
+            saveDestination(destination);
+            return destination;
+        }
+        return null;
+
     }
 
 
@@ -107,9 +113,13 @@ public class DestinationController {
      * @param destination destination to update
      */
     @PatchMapping("/destination")
-    public Destination updateDestination(@RequestBody Destination destination) {
-        saveDestination(destination);
-        return destination;
+    public Destination updateDestination(@RequestBody Destination destination, @RequestParam("_user") String userName) {
+        // Controle : Current user has access to the destination book
+        if(bookController.userHasAccessToBook(userName, destination.getBook_id())) {
+            saveDestination(destination);
+            return destination;
+        }
+        return null;
     }
 
     /**
@@ -117,7 +127,7 @@ public class DestinationController {
      * If the associate country does not exists, it creates it
      * @param destination destination to save
      */
-    public Destination saveDestination(Destination destination) {
+    public void saveDestination(Destination destination) {
         // If the country does not exist, create it
         Optional<Country> optionalCountry = countryDao.findByCode(destination.getCountry().getCode());
         if (optionalCountry.isEmpty()) {
@@ -130,7 +140,6 @@ public class DestinationController {
 
         // Save destination
         destinationDao.save(destination);
-        return destination;
     }
 
 
