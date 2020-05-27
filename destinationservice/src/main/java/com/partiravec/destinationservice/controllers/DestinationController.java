@@ -62,10 +62,6 @@ public class DestinationController {
         } catch (NumberFormatException ignored) {  }
 
         return destinationDao.findAll();
-
-
-
-
     }
 
     /**
