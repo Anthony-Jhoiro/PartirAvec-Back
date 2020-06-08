@@ -1,0 +1,60 @@
+version: '3'
+services:
+  partiravec-mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: partiravec
+      MYSQL_USER: partiravec
+      MYSQL_PASSWORD: T36H9Yzci9Fc
+      MYSQL_ROOT_PASSWORD: 35QaqBx5c8NV
+    ports:
+      - 10112:3306
+
+  partiravec-gateway:
+    build: gatewayservice
+    ports:
+      - 10100:8080
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://partiravec-eureka:8080/eureka
+      SERVER_PORT: 8080
+    depends_on:
+      - partiravec-eureka
+
+  partiravec-eureka:
+    build: eurekaserver
+    ports:
+      - 10101:8080
+    environment:
+      SERVER_PORT: 8080
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://partiravec-eureka:8080/eureka
+
+#  partiravec-destinationservice:
+#    build: destinationservice
+#    environment:
+#      MYSQL_DATASOURCE: jdbc:mysql://localhost:10112/partiravec
+#      MYSQL_USERNAME: partiravec
+#      MYSQL_PASSWORD: 35QaqBx5c8NV
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://partiravec-eureka:8761/eureka
+#    ports:
+#      - 10102:8080
+
+  partiravec-uploadservice:
+    build: uploadservice
+    ports:
+      - 10103:8080
+    environment:
+      SERVER_PORT: 8080
+      IMAGEPATH: /img/
+      IMAGEEXPOSEPATH: http://localhost:10100/uploadservice/
+      FRONT_URL: "http://localhost:10110"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://partiravec-eureka:8080/eureka
+    depends_on:
+      - partiravec-eureka
+
+  partiravec-keycloak:
+    image: "quay.io/keycloak/keycloak:10.0.1"
+    ports:
+      - 8080:8080
+    environment:
+      KEYCLOAK_USER: anthony
+      KEYCLOAK_PASSWORD: Ne5Cp62a

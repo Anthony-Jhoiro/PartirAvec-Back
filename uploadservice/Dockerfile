@@ -12,6 +12,7 @@ COPY pom.xml /build/
 
 COPY src /build/src/
 
+
 WORKDIR /build/
 
 RUN mvn package
@@ -21,6 +22,7 @@ FROM openjdk:11
 WORKDIR /app
 
 COPY --from=MAVEN_BUILD /build/target/uploadservice-0.0.1-SNAPSHOT.jar /app/
-RUN ls /app
+RUN mkdir /img
+
 
 ENTRYPOINT ["java", "-jar", "/app/uploadservice-0.0.1-SNAPSHOT.jar"]
