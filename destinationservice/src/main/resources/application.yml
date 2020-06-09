@@ -1,0 +1,27 @@
+
+server:
+  port: 10102
+  servlet:
+    context-path: /dest
+
+# Set up mysql database
+spring:
+  jpa.hibernate:
+    ddl-auto: update
+  datasource:
+    url: jdbc:mysql://localhost:3306/partiravec
+    username: root
+    password: ''
+  application:
+    name: destinationservice
+
+#Eureka server url for registering
+#This is eureka client
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+#register url to server
+    serviceUrl:
+      defaultZone: http://localhost:10101/eureka/
+

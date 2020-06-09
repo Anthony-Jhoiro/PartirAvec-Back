@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/dest")
+//@RequestMapping("/dest")
 public class DestinationController {
 
     private final DestinationDao destinationDao;

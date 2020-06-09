@@ -17,6 +17,11 @@ spring:
           uri: http://localhost:10102/
           predicates:
             - Path=/dest/**
+        - id: upload-route
+          uri: http://localhost:10103/
+          predicates:
+            - Path=/upload/**
+
   # --- Spring cloud security with Keycloak ---
   security:
     oauth2:
