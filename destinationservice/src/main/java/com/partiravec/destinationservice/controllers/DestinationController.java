@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/dest")
 public class DestinationController {
 
     private final DestinationDao destinationDao;
@@ -32,8 +33,9 @@ public class DestinationController {
         this.bookController = bookController;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public String getApi() {
+        System.out.println("hello !");
         return "[DestinationService] Hello World";
     }
 

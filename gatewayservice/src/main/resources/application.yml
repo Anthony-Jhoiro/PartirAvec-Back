@@ -1,0 +1,32 @@
+server:
+  port: 10100
+
+#Name of the application
+spring:
+  application:
+    name: gatewayservice
+  # --- Spring cloud gateway config ---
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+      routes:
+        - id: destination-route
+          uri: http://localhost:10102/
+          predicates:
+            - Path=/dest/**
+  # --- Spring cloud security with Keycloak ---
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/auth/realms/PartirAvec
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:10101/eureka/
+
+app:
+  front-url: "http://localhost:3000"
